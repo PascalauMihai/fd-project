@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2019 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
 import {LitElement, html, css} from 'lit';
 
 /**
@@ -13,7 +7,7 @@ import {LitElement, html, css} from 'lit';
  * @slot - This element has a slot
  * @csspart button - The button
  */
-export class MyElement extends LitElement {
+export class FdElement extends LitElement {
   static get styles() {
     return css`
       :host {
@@ -43,7 +37,7 @@ export class MyElement extends LitElement {
 
   constructor() {
     super();
-    this.name = 'World';
+    this.name = 'Worlds';
     this.count = 0;
   }
 
@@ -72,4 +66,4 @@ export class MyElement extends LitElement {
   }
 }
 
-window.customElements.define('my-element', MyElement);
+window.customElements.define('fd-element', FdElement);

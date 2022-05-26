@@ -6,17 +6,20 @@
     <title>FD Project</title>
     <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="my-element.js"></script>
+    <script type="module" src="fd-element.js"></script>
     <style>
       p {
         border: solid 1px blue;
         padding: 8px;
       }
+      body{
+        background-color: darkgrey;
+      }
     </style>
   </head>
   <body>
-    <my-element>
+    <fd-element>
       <p>This is child content</p>
-    </my-element>
+    </fd-element>
   </body>
 </html>
