@@ -1949,7 +1949,7 @@ export class FdElement extends LitElement {
         </div>
 
       </div>
-      <p class="image" id="asdfgh"> asdasdasdasasdasas</p>
+      <p class="image" id="asdfgh"> asdasdasdasasdasas<img style="width:300px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg"></p>
       <slot></slot>
     `;
   }
@@ -1959,22 +1959,38 @@ export class FdElement extends LitElement {
    
     //const searchResultJson = await this.fetchSearchData(this.shadowRoot.getElementById("searchBarInput").value);
     //this.searchResultData = searchResultJson.response.images;
-
     this.searchTitle = "Showing results for " + this.shadowRoot.getElementById("searchBarInput").value;
     var asd = this.shadowRoot.getElementById('asdfgh');
     console.log(asd);
-    asd.addEventListener('click', () => {this.changeImageSelectedStatus(asd.id)});
-
+    //asd.addEventListener('click', () => {this.changeImageSelectedStatus(asd.id)});
+    if (asd.getAttribute('listener') !== 'true') {
+      asd.addEventListener('click',  () =>{
+          this.changeImageSelectedStatus(asd.id)})
+          asd.setAttribute('listener', 'true');
+          console.log(asd.id + ' has been attached');
+     };
     this.shadowRoot.getElementById("imageSearchList").innerHTML = "";
 
     this.searchResultDataJson.forEach(
       (element,index) => {
-        this.searchResultData.push(`<li class="image hidden" id="imageElement${index}"><img src="${element.image.url}"></li>`);
+        this.searchResultData.push(`<p class="image hidden" id="imageElement${index}"><img src="${element.image.url}"></p>`);
         this.shadowRoot.getElementById("imageSearchList").innerHTML += this.searchResultData[index];
+        
+        //currentImage.addEventListener('click', () =>{ this.changeImageSelectedStatus(currentImage.id)});// click = function(){ this.changeImageSelectedStatus(currentImage.id); };
+      });
+
+    this.searchResultDataJson.forEach(
+      (element,index) => {
         var currentImage = this.shadowRoot.getElementById("imageElement"+index);
-        currentImage.click = function(){ this.changeImageSelectedStatus(currentImage.id); };
-      }
-    );
+        if (currentImage.getAttribute('listener') !== 'true') {
+          currentImage.addEventListener('click',  () =>{
+              this.changeImageSelectedStatus(currentImage.id)})
+              currentImage.setAttribute('listener', 'true');
+              console.log(currentImage.id + ' has been attached');
+         };
+      });
+    
+  
 
     this.displayPage(1);
 
