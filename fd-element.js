@@ -1941,15 +1941,14 @@ export class FdElement extends LitElement {
             Search
         </button>
         <hr>
-        <button @click=${this.previousPage} id="previousButton">Previous</button>
-        <button @click=${this.nextPage} id="nextButton">Next</button>
-        Page: <span id="page"></span>
+        <button class="hidden" @click=${this.previousPage} id="previousButton">Previous</button>
+        <button class="hidden" @click=${this.nextPage} id="nextButton">Next</button>
+        <p class="hidden" id="pageNumberP">Page:<span id="page"></span></p> 
         <div id="imageSearchList" class="image-container">
          
         </div>
 
       </div>
-      <p class="image" id="asdfgh"> asdasdasdasasdasas<img style="width:300px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg"></p>
       <slot></slot>
     `;
   }
@@ -1960,23 +1959,14 @@ export class FdElement extends LitElement {
     //const searchResultJson = await this.fetchSearchData(this.shadowRoot.getElementById("searchBarInput").value);
     //this.searchResultData = searchResultJson.response.images;
     this.searchTitle = "Showing results for " + this.shadowRoot.getElementById("searchBarInput").value;
-    var asd = this.shadowRoot.getElementById('asdfgh');
-    console.log(asd);
-    //asd.addEventListener('click', () => {this.changeImageSelectedStatus(asd.id)});
-    if (asd.getAttribute('listener') !== 'true') {
-      asd.addEventListener('click',  () =>{
-          this.changeImageSelectedStatus(asd.id)})
-          asd.setAttribute('listener', 'true');
-          console.log(asd.id + ' has been attached');
-     };
+   
     this.shadowRoot.getElementById("imageSearchList").innerHTML = "";
 
     this.searchResultDataJson.forEach(
       (element,index) => {
-        this.searchResultData.push(`<p class="image hidden" id="imageElement${index}"><img src="${element.image.url}"></p>`);
+        this.searchResultData.push(`<div class="image hidden" id="imageElement${index}"><img src="${element.image.url}"></div>`);
         this.shadowRoot.getElementById("imageSearchList").innerHTML += this.searchResultData[index];
         
-        //currentImage.addEventListener('click', () =>{ this.changeImageSelectedStatus(currentImage.id)});// click = function(){ this.changeImageSelectedStatus(currentImage.id); };
       });
 
     this.searchResultDataJson.forEach(
@@ -1993,7 +1983,10 @@ export class FdElement extends LitElement {
   
 
     this.displayPage(1);
-
+    this.shadowRoot.getElementById("previousButton").classList.remove("hidden");
+    this.shadowRoot.getElementById("nextButton").classList.remove("hidden");
+    this.shadowRoot.getElementById("pageNumberP").classList.remove("hidden");
+    
     this.dispatchEvent(new CustomEvent('search-content-delivered'));
   }
  
