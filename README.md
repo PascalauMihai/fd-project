@@ -1,3 +1,7 @@
+# API KEY
+Get your api key (const options) from https://rapidapi.com/Glavier/api/google-image-search1/ and add it into a file called apikey.js
+const options = {...};
+ export { options };
 # LitElement JavaScript starter
 
 This project includes a sample component using LitElement with JavaScript.
