@@ -27,8 +27,8 @@ export class FdElement extends LitElement {
         text-transform: capitalize;
         transition: all .2s linear;
         font-size: 20px;
+        box-sizing:border-box;
       }
-
       .container{
         padding:25px 10%;
         text-align: center;
@@ -119,6 +119,95 @@ export class FdElement extends LitElement {
       .container .hidden{
         display: none !important;
       }
+
+     
+
+        /* Slideshow container */
+        .slideshow-container {
+        max-width: 1000px;
+        position: relative;
+        margin: auto;
+        }
+
+        /* Hide the images by default */
+        .mySlides {
+        display: none;
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -22px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.8);
+        }
+
+        /* Caption text */
+        .text {
+        color: #f2f2f2;
+        font-size: 15px;
+        padding: 8px 12px;
+        position: absolute;
+        bottom: 8px;
+        width: 100%;
+        text-align: center;
+        }
+
+        /* Number text (1/3 etc) */
+        .numbertext {
+        color: #f2f2f2;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+        }
+
+        /* The dots/bullets/indicators */
+        .dot {
+        cursor: pointer;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+        background-color: #717171;
+        }
+
+        /* Fading animation */
+        .fade {
+        animation-name: fade;
+        animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+        from {opacity: .4}
+        to {opacity: 1}
+        }
+
     `;
   }
 
@@ -1930,6 +2019,7 @@ export class FdElement extends LitElement {
         }
     ];    this.searchResultDataHTML = [];
     this.paginationButtonsHidden = true;
+    this.slideIndex = 1;
   }
 
   static get properties() {
@@ -1940,6 +2030,7 @@ export class FdElement extends LitElement {
       currentPage: {type: Number},
       imagesPerPage: {type: Number},
       paginationButtonsHidden: {type: Boolean},
+      slideIndex : {type: Number},
 
     };
   }
@@ -1974,6 +2065,41 @@ export class FdElement extends LitElement {
         <div id="imageSearchList" class="image-container hidden">
         </div>
 
+
+        <!-- Slideshow container -->
+        <div class="slideshow-container">
+
+            <!-- Full-width images with number and caption text -->
+            <div id="mySlidesss" class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="https://www.petsittersireland.com/wp-content/uploads/2018/02/Ragdoll-Cat-Blue-Eyes.jpg" style="width:100%">
+                <div class="text">Caption Text</div>
+            </div>
+
+            <div class="mySlides fade">
+            <div class="numbertext">2 / 3</div>
+                <img src="https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png" style="width:100%">
+                <div class="text">Caption Two</div>
+            </div>
+
+            <div class="mySlides fade">
+            <div class="numbertext">3 / 3</div>
+                <img src="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d" style="width:100%">
+                <div class="text">Caption Three</div>
+            </div>
+
+            <!-- Next and previous buttons -->
+            <a class="prev" onclick="${this.plusSlides(-1)}">&#10094;</a>
+            <a class="next" onclick="${this.plusSlides(1)}">&#10095;</a>
+        </div>
+        <br>
+
+        <!-- The dots/circles -->
+        <div style="text-align:center">
+            <span class="dot" onclick="${this.currentSlide(1)}"></span>
+            <span class="dot" onclick="${this.currentSlide(2)}"></span>
+            <span class="dot" onclick="${this.currentSlide(3)}"></span>
+        </div>
       </div>
 
 
@@ -1988,20 +2114,24 @@ export class FdElement extends LitElement {
     }
 
     this.searchTitle = "Waiting for search results for " + this.shadowRoot.getElementById("searchBarInput").value;
+
     //const searchResultDataJson = await this.fetchSearchData(this.shadowRoot.getElementById("searchBarInput").value);
     //this.searchResultData = searchResultDataJson.response.images;
     this.searchResultDataHTML = []; //to be removed when fetching data, only for cat
-    
+
     this.searchTitle = "Showing results for " + this.shadowRoot.getElementById("searchBarInput").value;
 
+    // generating the html for each fetched image
     this.shadowRoot.getElementById("imageSearchList").innerHTML = "";
     this.searchResultData.forEach(
       (element,index) => {
-        this.searchResultDataHTML.push(`<div class="image hidden" id="imageElement${index}"><img src="${element.image.url}"></div>`);
+        this.searchResultDataHTML.push(`<div class="image hidden" id="imageElement${index}"><img src="${element.image.url}" alt="${element.source.title}"></div>`);
         this.shadowRoot.getElementById("imageSearchList").innerHTML += this.searchResultDataHTML[index];
         
       });
-
+    
+    
+    // changing image status on click (selected/not selected) 
     this.searchResultData.forEach(
       (element,index) => {
         var currentImage = this.shadowRoot.getElementById("imageElement"+index);
@@ -2009,14 +2139,15 @@ export class FdElement extends LitElement {
           currentImage.addEventListener('click',  () =>{
               this.changeImageSelectedStatus(currentImage.id)})
               currentImage.setAttribute('listener', 'true');
-              console.log(currentImage.id + ' has been attached');
+              //console.log(currentImage.id + ' has been attached');
          };
       });
     
   
-
     this.displayPage(1);
     this.showPaginationButtons();
+    //this.showSlides(this.slideIndex);
+
     this.dispatchEvent(new CustomEvent('search-content-delivered'));
   }
  
@@ -2062,8 +2193,7 @@ export class FdElement extends LitElement {
       }
   }
       
-   displayPage(page)
-  {
+   displayPage(page){
       var nextButton = this.shadowRoot.getElementById("nextButton");
       var previousButton = this.shadowRoot.getElementById("previousButton");
       var currentPageNumber = this.shadowRoot.getElementById("page");
@@ -2098,14 +2228,13 @@ export class FdElement extends LitElement {
       }
   }
   
-   numberOfPages()
-  {
+   numberOfPages(){
       return Math.ceil(this.searchResultDataHTML.length / this.imagesPerPage);
   }
 
   changeImageSelectedStatus(imageClickedId){
-    console.log("asdasdas");
-    console.log(imageClickedId);
+    // console.log("Changed selected status");
+    // console.log(imageClickedId);
     var element = this.shadowRoot.getElementById(imageClickedId);
       if(element.classList.contains("selected")){
         element.classList.remove("selected");
@@ -2117,6 +2246,36 @@ export class FdElement extends LitElement {
       this.dispatchEvent(new CustomEvent('image-selected-status-changed'));
 
   }
+
+// Next/previous controls
+ plusSlides(n) {
+  this.showSlides(this.slideIndex += n);
+}
+
+// Thumbnail image controls
+ currentSlide(n) {
+  this.showSlides(this.slideIndex = n);
+}
+
+ showSlides(n) {
+  let i;
+  let slides = this.shadowRoot.getElementById("mySlidesss");
+  debugger;
+  let dots = this.shadowRoot.getElementById("dot");
+  console.log(slides);
+  console.log(dots);
+  /*
+  if (n > 1) {this.slideIndex = 1}
+  if (n < 1) {this.slideIndex = 1}
+  for (i = 0; i < 1; i++) {
+    slides.style.display = "none";
+  }
+  for (i = 0; i < 1; i++) {
+    dots.className = dots[i].className.replace(" active", "");
+  }
+  slides.style.display = "block";
+  dots.className += " active";*/
+}
 }
 
 window.customElements.define('fd-element', FdElement);
