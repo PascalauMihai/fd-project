@@ -124,5 +124,5 @@ We have two main component divs (searchContainer and imageCarousel). For each pa
 
  Because we are not using any templates, only HTML, CSS and JavaScript, we are displaying only one image at a time in the carousel, without complex transitions, losing image quality in some cases because of the fixed resolution throughout the carousel.
 
- In case an image cannot be loaded by various reasons, we display a placeholder image set at the carousel resolution, using [placeholder-website](https://placeholder.com/) 
- Example: https://via.placeholder.com/[width]x[height] : [@web/dev-server](https://via.placeholder.com/500x450)  
+ In case an image cannot be loaded by various reasons, we display a placeholder image set at the carousel resolution, using [placeholder.com](https://placeholder.com/) 
+ Example: "https://via.placeholder.com/[width]x[height]" : [500x450 Placeholder Example](https://via.placeholder.com/500x450)  
