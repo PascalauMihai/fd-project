@@ -2,7 +2,7 @@
 
 ## Overview
 
-![fd-element](images/startingImage.PNG)
+![fd-element](images/startingImage.png)
 
 Image Search + Image Carousel Creation is a custom web component using LitElement with JavaScript. It defines a custom search bar which utilises an API based on the Google Images Search to fetch a list of images based on the searched term. These images are displayed on multiple pages (page size can be customized) and can be selected in order to create a custom image carousel (carousel width and height can be customized).
 
