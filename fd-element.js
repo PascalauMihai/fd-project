@@ -275,12 +275,16 @@ export class FdElement extends LitElement {
     this.cleanupExistingCarousel();
 
     this.searchedTerm = this.shadowRoot.getElementById("searchBarInput").value;
+    if(this.searchedTerm.length == 0){
+        this.searchedTerm = "empty";
+    }
+    
     this.searchTitle = "Waiting for search results for " + this.searchedTerm;
 
     const searchResultDataJson = await this.fetchSearchData(this.searchedTerm);
     this.searchResultData = searchResultDataJson.response.images;
 
-    this.searchTitle = "Showing results for " + this.shadowRoot.getElementById("searchBarInput").value;
+    this.searchTitle = "Showing results for " + this.searchedTerm;
 
     // generating the html for each fetched image
     this.shadowRoot.getElementById("imageSearchList").innerHTML = "";
