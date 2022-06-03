@@ -120,94 +120,54 @@ export class FdElement extends LitElement {
         display: none !important;
       }
 
-     
+      .carousel {
+	 align-items: center;
+	 display: flex;
+	 margin: 2rem auto;
+	 overflow: hidden;
+	 position: relative;
+	 width: 600px;
+    }
+    
+    .carousel__images {
+        display: flex;
+        transform: translateX(0);
+        transition: transform 0.25s;
+    }
 
-        /* Slideshow container */
-        .slideshow-container {
-        max-width: 1000px;
-        position: relative;
-        margin: auto;
-        }
-
-        /* Hide the images by default */
-        .mySlides {
-        display: none;
-        }
-
-        /* Next & previous buttons */
-        .prev, .next {
-        cursor: pointer;
-        position: absolute;
-        top: 50%;
-        width: auto;
-        margin-top: -22px;
-        padding: 16px;
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-        transition: 0.6s ease;
-        border-radius: 0 3px 3px 0;
-        user-select: none;
-        }
-
-        /* Position the "next button" to the right */
-        .next {
-        right: 0;
-        border-radius: 3px 0 0 3px;
-        }
-
-        /* On hover, add a black background color with a little bit see-through */
-        .prev:hover, .next:hover {
-        background-color: rgba(0,0,0,0.8);
-        }
-
-        /* Caption text */
-        .text {
-        color: #f2f2f2;
-        font-size: 15px;
-        padding: 8px 12px;
-        position: absolute;
-        bottom: 8px;
-        width: 100%;
-        text-align: center;
-        }
-
-        /* Number text (1/3 etc) */
-        .numbertext {
-        color: #f2f2f2;
-        font-size: 12px;
-        padding: 8px 12px;
-        position: absolute;
-        top: 0;
-        }
-
-        /* The dots/bullets/indicators */
-        .dot {
-        cursor: pointer;
-        height: 15px;
-        width: 15px;
-        margin: 0 2px;
-        background-color: #bbb;
+    .carousel__images img {
+        border-radius: 5px;
+        max-width: 600px;
+    }
+    
+    .carousel__button {
+        background: blue;
+        border: 0;
         border-radius: 50%;
-        display: inline-block;
-        transition: background-color 0.6s ease;
-        }
+        color: white;
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: bold;
+        height: 3rem;
+        opacity: 0.25;
+        position: absolute;
+        transition: opacity 0.25s;
+        width: 3rem;
+        z-index: 1;
+    }
 
-        .active, .dot:hover {
-        background-color: #717171;
-        }
+    .carousel__button.previous {
+        left: 5px;    
+    }
 
-        /* Fading animation */
-        .fade {
-        animation-name: fade;
-        animation-duration: 1.5s;
-        }
-
-        @keyframes fade {
-        from {opacity: .4}
-        to {opacity: 1}
-        }
-
+    .carousel__button.next { 
+        right: 5px;
+    }
+    
+    .carousel__button:hover {
+        opacity: 0.8;
+    }
+    
     `;
   }
 
@@ -2017,9 +1977,14 @@ export class FdElement extends LitElement {
             },
             "dominantColor": "rgb(10,16,16)"
         }
-    ];    this.searchResultDataHTML = [];
+    ];    
+    this.searchResultDataHTML = [];
     this.paginationButtonsHidden = true;
     this.slideIndex = 1;
+    this.carouselMaxWidthSize = 500;
+    this.carouselMaxHeightSize = 500;
+    this.carouselSelectedImages = [];
+    this.searchedTerm = "";
   }
 
   static get properties() {
@@ -2031,7 +1996,9 @@ export class FdElement extends LitElement {
       imagesPerPage: {type: Number},
       paginationButtonsHidden: {type: Boolean},
       slideIndex : {type: Number},
-
+      carouselMaxWidthSize : {type: Number},
+      carouselMaxHeightSize : {type: Number},
+      carouselSelectedImages : {type : Array},
     };
   }
   
@@ -2059,63 +2026,53 @@ export class FdElement extends LitElement {
             Search
         </button>
         <hr>
+        <button @click=${this.selectAllImages} class="hidden" id="selectAllButton"> Select All</button>
+        <button @click=${this.deselectAllImages} class="hidden" id="deselectAllButton"> Deselect All</button>
+        <hr>
+        <button @click=${this.createImageCarousel} class="hidden" id="createCarouselButton"> Create Image Carousel</button>
+        <hr>
         <button class="hidden" @click=${this.previousPage} id="previousButton">Previous</button>
         <button class="hidden" @click=${this.nextPage} id="nextButton">Next</button>
         <p class="hidden" id="pageNumberP">Page: <span id="page"></span> / ${this.numberOfPages()}</p> 
         <div id="imageSearchList" class="image-container hidden">
         </div>
-
-
-        <!-- Slideshow container -->
-        <div class="slideshow-container">
-
-            <!-- Full-width images with number and caption text -->
-            <div id="mySlidesss" class="mySlides fade">
-                <div class="numbertext">1 / 3</div>
-                <img src="https://www.petsittersireland.com/wp-content/uploads/2018/02/Ragdoll-Cat-Blue-Eyes.jpg" style="width:100%">
-                <div class="text">Caption Text</div>
-            </div>
-
-            <div class="mySlides fade">
-            <div class="numbertext">2 / 3</div>
-                <img src="https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png" style="width:100%">
-                <div class="text">Caption Two</div>
-            </div>
-
-            <div class="mySlides fade">
-            <div class="numbertext">3 / 3</div>
-                <img src="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d" style="width:100%">
-                <div class="text">Caption Three</div>
-            </div>
-
-            <!-- Next and previous buttons -->
-            <a class="prev" onclick="${this.plusSlides(-1)}">&#10094;</a>
-            <a class="next" onclick="${this.plusSlides(1)}">&#10095;</a>
-        </div>
-        <br>
-
-        <!-- The dots/circles -->
-        <div style="text-align:center">
-            <span class="dot" onclick="${this.currentSlide(1)}"></span>
-            <span class="dot" onclick="${this.currentSlide(2)}"></span>
-            <span class="dot" onclick="${this.currentSlide(3)}"></span>
-        </div>
+       
+       </div>
+       <hr>
+       <h1 class="heading">${this.searchTitle}</h1>
+        <div class="carousel hidden" id="carouselId">
+          
+          <button class="carousel__button previous" id="previous"><</button>
+          <div class="carousel__images" id="carouselImagesId">
+             
+          </div>
+          <button class="carousel__button next" id="next">></button>
       </div>
-
+      
 
       <!--To be added in case you want to add other items <slot></slot> -->
     `;
   }
 
+  cleanupExistingCarousel(){
+    this.carouselSelectedImages = [];
+    this.shadowRoot.getElementById("carouselId").classList.add("hidden");
+    this.shadowRoot.getElementById("createCarouselButton").classList.add("hidden");
+
+  }
+
   async searchBarInputClick() {
     
     if (!this.paginationButtonsHidden){
-        this.hidePaginationButtons();
+        this.hideSearchContainerElements();
     }
 
-    this.searchTitle = "Waiting for search results for " + this.shadowRoot.getElementById("searchBarInput").value;
+    this.cleanupExistingCarousel();
 
-    //const searchResultDataJson = await this.fetchSearchData(this.shadowRoot.getElementById("searchBarInput").value);
+    this.searchedTerm = this.shadowRoot.getElementById("searchBarInput").value;
+    this.searchTitle = "Waiting for search results for " + this.searchedTerm;
+
+    //const searchResultDataJson = await this.fetchSearchData(this.searchedTerm);
     //this.searchResultData = searchResultDataJson.response.images;
     this.searchResultDataHTML = []; //to be removed when fetching data, only for cat
 
@@ -2129,44 +2086,45 @@ export class FdElement extends LitElement {
         this.shadowRoot.getElementById("imageSearchList").innerHTML += this.searchResultDataHTML[index];
         
       });
-    
+     
     
     // changing image status on click (selected/not selected) 
     this.searchResultData.forEach(
-      (element,index) => {
+      (_,index) => {
         var currentImage = this.shadowRoot.getElementById("imageElement"+index);
         if (currentImage.getAttribute('listener') !== 'true') {
           currentImage.addEventListener('click',  () =>{
               this.changeImageSelectedStatus(currentImage.id)})
               currentImage.setAttribute('listener', 'true');
-              //console.log(currentImage.id + ' has been attached');
          };
       });
-    
+      
   
     this.displayPage(1);
-    this.showPaginationButtons();
-    //this.showSlides(this.slideIndex);
+    this.showSearchContainerElements();  
 
     this.dispatchEvent(new CustomEvent('search-content-delivered'));
   }
  
-  showPaginationButtons(){
+  showSearchContainerElements(){
 
     this.shadowRoot.getElementById("previousButton").classList.remove("hidden");
     this.shadowRoot.getElementById("nextButton").classList.remove("hidden");
     this.shadowRoot.getElementById("pageNumberP").classList.remove("hidden");
     this.shadowRoot.getElementById("imageSearchList").classList.remove("hidden");
-    
+    this.shadowRoot.getElementById("selectAllButton").classList.remove("hidden");
+    this.shadowRoot.getElementById("deselectAllButton").classList.remove("hidden");
     this.paginationButtonsHidden = false;
   }
 
-  hidePaginationButtons(){
+  hideSearchContainerElements(){
 
     this.shadowRoot.getElementById("previousButton").classList.add("hidden");
     this.shadowRoot.getElementById("nextButton").classList.add("hidden");
     this.shadowRoot.getElementById("pageNumberP").classList.add("hidden");
     this.shadowRoot.getElementById("imageSearchList").classList.add("hidden");
+    this.shadowRoot.getElementById("selectAllButton").classList.add("hidden");
+    this.shadowRoot.getElementById("deselectAllButton").classList.add("hidden");
 
     this.paginationButtonsHidden = true;
   }
@@ -2203,13 +2161,7 @@ export class FdElement extends LitElement {
       if (page > this.numberOfPages()) page = this.numberOfPages();
       
       for (var index = (page-1) * this.imagesPerPage; index < (page * this.imagesPerPage) && index < this.searchResultDataHTML.length; index++) {
-        //this.shadowRoot.getElementById("imageSearchList").innerHTML += this.searchResultDataHTML[index];
         this.shadowRoot.getElementById("imageElement" + index).classList.remove("hidden");
-
-        /* var currentImageElement = this.shadowRoot.getElementById("imageElement"+index);
-        console.log(currentImageElement.id);
-        currentImageElement.addEventListener('click', () => {this.changeImageSelectedStatus(currentImageElement.id)});*/
-
       }
 
 
@@ -2233,49 +2185,113 @@ export class FdElement extends LitElement {
   }
 
   changeImageSelectedStatus(imageClickedId){
-    // console.log("Changed selected status");
-    // console.log(imageClickedId);
     var element = this.shadowRoot.getElementById(imageClickedId);
+    var imageClickedURL = element.innerHTML.split('"')[1];
       if(element.classList.contains("selected")){
         element.classList.remove("selected");
+        this.carouselSelectedImages = this.carouselSelectedImages.filter(function(e) {return e !== imageClickedURL});        
+
       }
       else{
         element.classList.add("selected");
+        this.carouselSelectedImages.push(imageClickedURL);
         }
 
-      this.dispatchEvent(new CustomEvent('image-selected-status-changed'));
+        if (this.carouselSelectedImages.length > 0){
+            this.shadowRoot.getElementById("createCarouselButton").classList.remove("hidden");
+        }
+        else{
+         this.shadowRoot.getElementById("createCarouselButton").classList.add("hidden");
+        }
+
+        this.dispatchEvent(new CustomEvent('image-selected-status-changed'));
 
   }
 
-// Next/previous controls
- plusSlides(n) {
-  this.showSlides(this.slideIndex += n);
-}
+  selectAllImages(){
+    console.log("clicked select all images");
+    for (var index = 0; index < this.searchResultDataHTML.length; index++) {
+        var element = this.shadowRoot.getElementById("imageElement" + index);
+        var imageClickedURL = element.innerHTML.split('"')[1];
 
-// Thumbnail image controls
- currentSlide(n) {
-  this.showSlides(this.slideIndex = n);
-}
+        if (!element.classList.contains("selected")){
+            element.classList.add("selected");
+            this.carouselSelectedImages.push(imageClickedURL);
+        }    
+    }
+    this.shadowRoot.getElementById("createCarouselButton").classList.remove("hidden");
+  }
 
- showSlides(n) {
-  let i;
-  let slides = this.shadowRoot.getElementById("mySlidesss");
-  debugger;
-  let dots = this.shadowRoot.getElementById("dot");
-  console.log(slides);
-  console.log(dots);
-  /*
-  if (n > 1) {this.slideIndex = 1}
-  if (n < 1) {this.slideIndex = 1}
-  for (i = 0; i < 1; i++) {
-    slides.style.display = "none";
+  deselectAllImages(){
+    for (var index = 0; index < this.searchResultDataHTML.length; index++) {
+        this.shadowRoot.getElementById("imageElement" + index).classList.remove("selected");
+      }      
+
+      this.carouselSelectedImages = [];
+      this.shadowRoot.getElementById("createCarouselButton").classList.add("hidden");
+
   }
-  for (i = 0; i < 1; i++) {
-    dots.className = dots[i].className.replace(" active", "");
+
+  createImageCarousel(){
+  const carouselImagesHTMLElement = this.shadowRoot.getElementById("carouselImagesId");
+  carouselImagesHTMLElement.innerHTML = "";
+  
+  var currentMaxWidthSize = this.carouselMaxWidthSize;
+  var currentMaxHeightSize = this.carouselMaxHeightSize;
+ 
+  if (currentMaxHeightSize == currentMaxWidthSize){
+    currentMaxHeightSize += 1;
   }
-  slides.style.display = "block";
-  dots.className += " active";*/
-}
+  
+  this.carouselSelectedImages.forEach(element =>{
+    carouselImagesHTMLElement.innerHTML += `<img src="${element}" alt="" onerror=this.src="https://via.placeholder.com/${currentMaxWidthSize}x${currentMaxHeightSize}">`;
+  });
+
+  this.shadowRoot.getElementById("carouselId").style.width = css`${currentMaxWidthSize}px`;
+  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.maxWidth = css`${currentMaxWidthSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.width = css`${currentMaxWidthSize}px`;});
+  
+  this.shadowRoot.getElementById("carouselId").style.height = css`${currentMaxHeightSize}px`;  
+  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.maxHeight = css`${currentMaxHeightSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.height = css`${currentMaxHeightSize}px`;});
+
+  const carouselImages = this.shadowRoot.querySelector('.carousel__images');
+  const carouselButtons = this.shadowRoot.querySelectorAll('.carousel__button');
+  const numberOfImages = this.shadowRoot.querySelectorAll('.carousel__images img').length;
+  let imageIndex = 1;
+  let translateX = 0;
+  carouselButtons.forEach(button => {
+    button.addEventListener('click', (event) => {
+      if (event.target.id === 'previous') {
+
+        if (imageIndex == 1){
+            imageIndex = numberOfImages;
+            translateX -= currentMaxWidthSize*(numberOfImages-1);
+        }
+        else {
+            imageIndex--;
+            translateX += currentMaxWidthSize;
+        }
+        
+      }
+      else{
+          if (imageIndex == numberOfImages){
+              imageIndex = 1;
+              translateX += currentMaxWidthSize*(numberOfImages-1);
+          }
+          else{
+            imageIndex++;
+            translateX -= currentMaxWidthSize;
+          }
+        }
+
+      
+      carouselImages.style.transform = `translateX(${translateX}px)`;
+    });
+  });
+
+  this.shadowRoot.getElementById("carouselId").classList.remove("hidden");
+ }
 }
 
 window.customElements.define('fd-element', FdElement);
