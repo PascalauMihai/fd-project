@@ -129,18 +129,18 @@ export class FdElement extends LitElement {
 	 width: 600px;
     }
     
-    .carousel__images {
+    .carousel-images {
         display: flex;
         transform: translateX(0);
         transition: transform 0.25s;
     }
 
-    .carousel__images img {
+    .carousel-images img {
         border-radius: 5px;
         max-width: 600px;
     }
     
-    .carousel__button {
+    .carousel-button {
         background: blue;
         border: 0;
         border-radius: 50%;
@@ -156,18 +156,24 @@ export class FdElement extends LitElement {
         z-index: 1;
     }
 
-    .carousel__button.previous {
+    .carousel-button.previous {
         left: 5px;    
     }
 
-    .carousel__button.next { 
+    .carousel-button.next { 
         right: 5px;
     }
     
-    .carousel__button:hover {
+    .carousel-button:hover {
         opacity: 0.8;
     }
     
+    .carousel-header {
+        font-size: 30px;
+        text-align: center;
+        margin-top: 40px;
+    }
+
     `;
   }
 
@@ -2013,7 +2019,7 @@ export class FdElement extends LitElement {
 
     return fetch('https://google-image-search1.p.rapidapi.com/v2/?q=' + searchTerm + '&hl=en', options)
     .then(response => response.json())
-    .then(responseJson => { console.log(responseJson); return responseJson; })
+    .then(responseJson => { return responseJson; })
     .catch(err => console.error(err));
   }
 
@@ -2039,14 +2045,14 @@ export class FdElement extends LitElement {
        
        </div>
        <hr>
-       <h1 class="heading">${this.searchTitle}</h1>
+       <h1 class="carousel-header hidden" id="carouselHeaderId">Created Image Carousel for ${this.searchedTerm}</h1>
         <div class="carousel hidden" id="carouselId">
           
-          <button class="carousel__button previous" id="previous"><</button>
-          <div class="carousel__images" id="carouselImagesId">
+          <button class="carousel-button previous" id="previous"><</button>
+          <div class="carousel-images" id="carouselImagesId">
              
           </div>
-          <button class="carousel__button next" id="next">></button>
+          <button class="carousel-button next" id="next">></button>
       </div>
       
 
@@ -2058,7 +2064,7 @@ export class FdElement extends LitElement {
     this.carouselSelectedImages = [];
     this.shadowRoot.getElementById("carouselId").classList.add("hidden");
     this.shadowRoot.getElementById("createCarouselButton").classList.add("hidden");
-
+    this.shadowRoot.getElementById("carouselHeaderId").classList.add("hidden");
   }
 
   async searchBarInputClick() {
@@ -2072,9 +2078,8 @@ export class FdElement extends LitElement {
     this.searchedTerm = this.shadowRoot.getElementById("searchBarInput").value;
     this.searchTitle = "Waiting for search results for " + this.searchedTerm;
 
-    //const searchResultDataJson = await this.fetchSearchData(this.searchedTerm);
-    //this.searchResultData = searchResultDataJson.response.images;
-    this.searchResultDataHTML = []; //to be removed when fetching data, only for cat
+    const searchResultDataJson = await this.fetchSearchData(this.searchedTerm);
+    this.searchResultData = searchResultDataJson.response.images;
 
     this.searchTitle = "Showing results for " + this.shadowRoot.getElementById("searchBarInput").value;
 
@@ -2209,7 +2214,6 @@ export class FdElement extends LitElement {
   }
 
   selectAllImages(){
-    console.log("clicked select all images");
     for (var index = 0; index < this.searchResultDataHTML.length; index++) {
         var element = this.shadowRoot.getElementById("imageElement" + index);
         var imageClickedURL = element.innerHTML.split('"')[1];
@@ -2248,16 +2252,16 @@ export class FdElement extends LitElement {
   });
 
   this.shadowRoot.getElementById("carouselId").style.width = css`${currentMaxWidthSize}px`;
-  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.maxWidth = css`${currentMaxWidthSize}px`;});
-  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.width = css`${currentMaxWidthSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel-images img').forEach(element =>{element.style.maxWidth = css`${currentMaxWidthSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel-images img').forEach(element =>{element.style.width = css`${currentMaxWidthSize}px`;});
   
   this.shadowRoot.getElementById("carouselId").style.height = css`${currentMaxHeightSize}px`;  
-  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.maxHeight = css`${currentMaxHeightSize}px`;});
-  this.shadowRoot.querySelectorAll('.carousel__images img').forEach(element =>{element.style.height = css`${currentMaxHeightSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel-images img').forEach(element =>{element.style.maxHeight = css`${currentMaxHeightSize}px`;});
+  this.shadowRoot.querySelectorAll('.carousel-images img').forEach(element =>{element.style.height = css`${currentMaxHeightSize}px`;});
 
-  const carouselImages = this.shadowRoot.querySelector('.carousel__images');
-  const carouselButtons = this.shadowRoot.querySelectorAll('.carousel__button');
-  const numberOfImages = this.shadowRoot.querySelectorAll('.carousel__images img').length;
+  const carouselImages = this.shadowRoot.querySelector('.carousel-images');
+  const carouselButtons = this.shadowRoot.querySelectorAll('.carousel-button');
+  const numberOfImages = this.shadowRoot.querySelectorAll('.carousel-images img').length;
   let imageIndex = 1;
   let translateX = 0;
   carouselButtons.forEach(button => {
@@ -2291,6 +2295,8 @@ export class FdElement extends LitElement {
   });
 
   this.shadowRoot.getElementById("carouselId").classList.remove("hidden");
+  this.shadowRoot.getElementById("carouselHeaderId").classList.remove("hidden");
+
  }
 }
 
