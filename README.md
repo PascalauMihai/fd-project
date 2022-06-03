@@ -1,47 +1,35 @@
-# API KEY
-Get your api key (const options) from https://rapidapi.com/Glavier/api/google-image-search1/ and add it into a file called apikey.js
-const options = {...};
- export { options };
-# LitElement JavaScript starter
+# Framework Development project - Image Search + Image Carousel Creation Web Component
 
-This project includes a sample component using LitElement with JavaScript.
+# Overview
+Image Search + Image Carousel Creation is a custom web component using LitElement with JavaScript. It defines a custom search bar which utilises an API based on the Google Images Search to fetch a list of images based on the searched term. These images are displayed on multiple pages (page size can be customized) and can be selected in order to create a custom image carousel (carousel width and height can be customized).
 
-This template is generated from the `lit-starter-js` package in [the main Lit
-repo](https://github.com/lit/lit). Issues and PRs for this template should be
-filed in that repo.
+# Setup
 
-## Setup
-
-Install dependencies:
+Clone the repository and install the necesary dependencies:
 
 ```bash
 npm i
 ```
-
-## Testing
-
-This sample modern-web.dev's
-[@web/test-runner](https://www.npmjs.com/package/@web/test-runner) for testing. See the
-[modern-web.dev testing documentation](https://modern-web.dev/docs/test-runner/overview) for
-more information.
-
-Tests can be run with the `test` script, which will run your tests against Lit's development mode (with more verbose errors) as well as against Lit's production mode:
+After everything was installed I recommend an update to remove any possible problems:
 
 ```bash
-npm test
+npm update
 ```
 
-For local testing during development, the `test:dev:watch` command will run your tests in Lit's development mode (with verbose errors) on every change to your source files:
+## API KEY (Image searching)
 
-```bash
-npm test:watch
+Get your API key from https://rapidapi.com/Glavier/api/google-image-search1/ from the JavaScript - fetch code snippet and add it into a file called ./apikey.js:
+
+In the end, the file should look like this
+
+```js
+const options = {...};
+export { options };
 ```
-
-Alternatively the `test:prod` and `test:prod:watch` commands will run your tests in Lit's production mode.
 
 ## Dev Server
 
-This sample uses modern-web.dev's [@web/dev-server](https://www.npmjs.com/package/@web/dev-server) for previewing the project without additional build steps. Web Dev Server handles resolving Node-style "bare" import specifiers, which aren't supported in browsers. It also automatically transpiles JavaScript and adds polyfills to support older browsers. See [modern-web.dev's Web Dev Server documentation](https://modern-web.dev/docs/dev-server/overview/) for more information.
+This web component uses modern-web.dev's [@web/dev-server](https://www.npmjs.com/package/@web/dev-server) for previewing the project without additional build steps. Web Dev Server handles resolving Node-style "bare" import specifiers, which aren't supported in browsers. It also automatically transpiles JavaScript and adds polyfills to support older browsers. See [modern-web.dev's Web Dev Server documentation](https://modern-web.dev/docs/dev-server/overview/) for more information.
 
 To run the dev server and open the project in a new browser tab:
 
@@ -49,11 +37,11 @@ To run the dev server and open the project in a new browser tab:
 npm run serve
 ```
 
-There is a development HTML file located at `/dev/index.html` that you can view at http://localhost:8000/dev/index.html. Note that this command will serve your code using Lit's development mode (with more verbose errors). To serve your code against Lit's production mode, use `npm run serve:prod`.
+The site will usually be served at http://localhost:8000.
 
 ## Editing
 
-If you use VS Code, we highly reccomend the [lit-plugin extension](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin), which enables some extremely useful features for lit-html templates:
+If you use VS Code, I highly reccomend the [lit-plugin extension](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin), which enables some extremely useful features for lit-html templates:
 
 - Syntax highlighting
 - Type-checking
@@ -64,57 +52,3 @@ If you use VS Code, we highly reccomend the [lit-plugin extension](https://marke
 - Quick Fixes
 
 The project is setup to reccomend lit-plugin to VS Code users if they don't already have it installed.
-
-## Linting
-
-Linting of JavaScript files is provided by [ESLint](eslint.org). In addition, [lit-analyzer](https://www.npmjs.com/package/lit-analyzer) is used to type-check and lint lit-html templates with the same engine and rules as lit-plugin.
-
-The rules are mostly the recommended rules from each project, but some have been turned off to make LitElement usage easier. The recommended rules are pretty strict, so you may want to relax them by editing `.eslintrc.json`.
-
-To lint the project run:
-
-```bash
-npm run lint
-```
-
-## Formatting
-
-[Prettier](https://prettier.io/) is used for code formatting. It has been pre-configured according to the Lit's style. You can change this in `.prettierrc.json`.
-
-Prettier has not been configured to run when commiting files, but this can be added with Husky and and `pretty-quick`. See the [prettier.io](https://prettier.io/) site for instructions.
-
-## Static Site
-
-This project includes a simple website generated with the [eleventy](11ty.dev) static site generator and the templates and pages in `/docs-src`. The site is generated to `/docs` and intended to be checked in so that GitHub pages can serve the site [from `/docs` on the master branch](https://help.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
-
-To enable the site go to the GitHub settings and change the GitHub Pages &quot;Source&quot; setting to &quot;master branch /docs folder&quot;.</p>
-
-To build the site, run:
-
-```bash
-npm run docs
-```
-
-To serve the site locally, run:
-
-```bash
-npm run docs:serve
-```
-
-To watch the site files, and re-build automatically, run:
-
-```bash
-npm run docs:watch
-```
-
-The site will usually be served at http://localhost:8000.
-
-## Bundling and minification
-
-This starter project doesn't include any build-time optimizations like bundling or minification. We recommend publishing components as unoptimized JavaScript modules, and performing build-time optimizations at the application level. This gives build tools the best chance to deduplicate code, remove dead code, and so on.
-
-For information on building application projects that include LitElement components, see [Build for production](https://lit.dev/docs/tools/production/) on the LitElement site.
-
-## More information
-
-See [Get started](https://lit.dev/docs/getting-started/) on the Lit site for more information.
